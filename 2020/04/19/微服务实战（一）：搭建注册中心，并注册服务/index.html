@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="架构,微服务," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="使用Consul创建注册中心（基于docker-compose）docker-compose 文件如下： 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748version: &quot;3.0&quot;services:    # consul server，对外暴露的ui">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微服务实战（一）：搭建注册中心，并注册服务">
+<meta property="og:url" content="http://yoursite.com/2020/04/19/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%AE%9E%E6%88%98%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E6%90%AD%E5%BB%BA%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%EF%BC%8C%E5%B9%B6%E6%B3%A8%E5%86%8C%E6%9C%8D%E5%8A%A1/index.html">
+<meta property="og:site_name" content="修峰">
+<meta property="og:description" content="使用Consul创建注册中心（基于docker-compose）docker-compose 文件如下： 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748version: &quot;3.0&quot;services:    # consul server，对外暴露的ui">
+<meta property="article:published_time" content="2020-04-19T03:00:50.000Z">
+<meta property="article:modified_time" content="2020-12-21T06:53:24.557Z">
+<meta property="article:author" content="修峰">
+<meta property="article:tag" content="架构">
+<meta property="article:tag" content="微服务">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/04/19/微服务实战（一）：搭建注册中心，并注册服务/"/>
+
+
+
+
+
+  <title>微服务实战（一）：搭建注册中心，并注册服务 | 修峰</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">修峰</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">常应常静常清净</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/19/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%AE%9E%E6%88%98%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E6%90%AD%E5%BB%BA%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%EF%BC%8C%E5%B9%B6%E6%B3%A8%E5%86%8C%E6%9C%8D%E5%8A%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="修峰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/user.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="修峰">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">微服务实战（一）：搭建注册中心，并注册服务</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-19T11:00:50+08:00">
+                2020-04-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" itemprop="url" rel="index">
+                    <span itemprop="name">微服务</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.1k 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  5 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="使用Consul创建注册中心（基于docker-compose）"><a href="#使用Consul创建注册中心（基于docker-compose）" class="headerlink" title="使用Consul创建注册中心（基于docker-compose）"></a>使用Consul创建注册中心（基于docker-compose）</h2><p>docker-compose 文件如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">version: &quot;3.0&quot;</span><br><span class="line"></span><br><span class="line">services:</span><br><span class="line">    # consul server，对外暴露的ui接口为8500，只有在2台consul服务器的情况下集群才起作用</span><br><span class="line">    consulserver:</span><br><span class="line">        image: progrium&#x2F;consul:latest</span><br><span class="line">        hostname: consulserver</span><br><span class="line">        ports:</span><br><span class="line">            - &quot;8300&quot;</span><br><span class="line">            - &quot;8400&quot;</span><br><span class="line">            - &quot;8500:8500&quot;</span><br><span class="line">            - &quot;53&quot;</span><br><span class="line">        command: -server -ui-dir &#x2F;ui -data-dir &#x2F;tmp&#x2F;consul --bootstrap-expect&#x3D;3</span><br><span class="line"></span><br><span class="line">    # consul server1在consul server服务起来后，加入集群中</span><br><span class="line">    consulserver1:</span><br><span class="line">        image: progrium&#x2F;consul:latest</span><br><span class="line">        hostname: consulserver1</span><br><span class="line">        depends_on:</span><br><span class="line">            - &quot;consulserver&quot;</span><br><span class="line">        ports:</span><br><span class="line">            - &quot;8300&quot;</span><br><span class="line">            - &quot;8400&quot;</span><br><span class="line">            - &quot;8500&quot;</span><br><span class="line">            - &quot;53&quot;</span><br><span class="line">        command: -server -data-dir &#x2F;tmp&#x2F;consul -join consulserver</span><br><span class="line"></span><br><span class="line">    # consul server2在consul server服务起来后，加入集群中</span><br><span class="line">    consulserver2:</span><br><span class="line">        image: progrium&#x2F;consul:latest</span><br><span class="line">        hostname: consulserver2</span><br><span class="line">        depends_on:</span><br><span class="line">            - &quot;consulserver&quot;</span><br><span class="line">        ports:</span><br><span class="line">            - &quot;8300&quot;</span><br><span class="line">            - &quot;8400&quot;</span><br><span class="line">            - &quot;8500&quot;</span><br><span class="line">            - &quot;53&quot;</span><br><span class="line">        command: -server -data-dir &#x2F;tmp&#x2F;consul -join consulserver</span><br><span class="line">    #注册中心</span><br><span class="line">    registrator:</span><br><span class="line">        image: gliderlabs&#x2F;registrator:master</span><br><span class="line">        hostname: registrator</span><br><span class="line">        depends_on:</span><br><span class="line">            - &quot;consulserver&quot;</span><br><span class="line">        volumes:</span><br><span class="line">            - &quot;&#x2F;var&#x2F;run&#x2F;docker.sock:&#x2F;tmp&#x2F;docker.sock&quot;</span><br><span class="line">        command: -internal consul:&#x2F;&#x2F;consulserver:8500</span><br></pre></td></tr></table></figure>
+<p>访问<a href="http://127.0.0.1:8500" target="_blank" rel="noopener">127.0.0.1:8500</a>查看注册中心是否启动成功</p>
+<h2 id="服务如何注册进服务端"><a href="#服务如何注册进服务端" class="headerlink" title="服务如何注册进服务端"></a>服务如何注册进服务端</h2><h3 id="第一种：-使用docker启动nodejs"><a href="#第一种：-使用docker启动nodejs" class="headerlink" title="第一种： 使用docker启动nodejs"></a>第一种： 使用docker启动nodejs</h3><a id="more"></a>
+<h4 id="以Koa为例"><a href="#以Koa为例" class="headerlink" title="以Koa为例"></a>以Koa为例</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">const Koa &#x3D; require(&#39;koa&#39;);</span><br><span class="line">const app &#x3D; new Koa();</span><br><span class="line"></span><br><span class="line">app.use(ctx &#x3D;&gt; &#123;</span><br><span class="line">  ctx.body &#x3D; &#39;Hello Koa&#39;;</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">app.listen(3000);</span><br><span class="line">console.log(&quot;Running on http:&#x2F;&#x2F;localhost:&quot; + 3000);</span><br></pre></td></tr></table></figure>
+<p>Dcokerfile 文件内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">FROM node:10</span><br><span class="line">RUN mkdir -p &#x2F;home&#x2F;demo</span><br><span class="line">WORKDIR &#x2F;home&#x2F;demo </span><br><span class="line">COPY . &#x2F;home&#x2F;demo</span><br><span class="line">RUN npm install</span><br><span class="line">EXPOSE 3000</span><br><span class="line">CMD npm start</span><br></pre></td></tr></table></figure>
+
+<p>FROM 基于镜像<br>RUN 执行命令<br>WORKDIR 切换工作目录<br>COPY 拷贝当前目录到容器目录<br>EXPOSE 暴露端口<br>CMD 启动命令（一个Dockerfile只能有一个）</p>
+<h4 id="构建docker镜像"><a href="#构建docker镜像" class="headerlink" title="构建docker镜像"></a>构建docker镜像</h4><p>在Dockerfile同级目录下执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker build -t clent-koa .</span><br></pre></td></tr></table></figure>
+<p>查看镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker image ls</span><br></pre></td></tr></table></figure>
+<p>启动镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -d -p 3000:3000 client-koa</span><br></pre></td></tr></table></figure>
+<p>访问<a href="http://127.0.0.1:3000" target="_blank" rel="noopener">127.0.0.1:3000</a>就可以访问koa项目</p>
+<p>创建client-koa的docker-compose.koa.yml 文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">version: &quot;3.0&quot;</span><br><span class="line"></span><br><span class="line">services:</span><br><span class="line">  koa:</span><br><span class="line">  image: client-koa:latest</span><br><span class="line">  environment:</span><br><span class="line">    #作用将3000端口的应用注册到注册中心</span><br><span class="line">    SERVICE_3000_NAME: service-koa</span><br><span class="line">  ports:</span><br><span class="line">    - &quot;3000&quot;</span><br></pre></td></tr></table></figure>
+<p>client-koa为刚才构建的镜像</p>
+<p>启动服务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose -f docker-compose.koa.yml up -d --scale web&#x3D;3</span><br></pre></td></tr></table></figure>
+<p>–scale web=3表示启动三台服务器</p>
+<h3 id="以Spring-Boot-为例"><a href="#以Spring-Boot-为例" class="headerlink" title="以Spring Boot 为例"></a>以Spring Boot 为例</h3><h4 id="添加Maven依赖"><a href="#添加Maven依赖" class="headerlink" title="添加Maven依赖"></a>添加Maven依赖</h4><p>在Spring Boot项目pom.xml文件中引入spring-cloud-starter-consul-discovery启动器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.cloud&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-cloud-starter-consul-discovery&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;2.1.1.RELEASE&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
+<p>使用Consul配置信息时需引入spring-cloud-starter-consul-config依赖</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> &lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.cloud&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-cloud-starter-consul-config&lt;&#x2F;artifactId&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="添加配置"><a href="#添加配置" class="headerlink" title="添加配置"></a>添加配置</h4><p>创建系统级配置文件bootstrap.yml<br>使用Spring Cloud Consul Config,需要配置以下信息在bootstrap.yml文件</p>
+<p>spring.cloud.consul.host：配置consul地址<br>spring.cloud.consul.port：配置consul端口<br>spring.cloud.consul.config.prefix：配置基本文件，默认值config<br>spring.cloud.consul.config.enabled：启动consul配置中心<br>spring.cloud.consul.config.format：consul上面文件的格式 YAML、FILES、PROPERTIES、默认 KEY-VALUE<br>spring.cloud.consul.config.data-key：表示 consul 上面的 KEY 值(或者说文件的名字)，默认是 data</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  cloud:</span><br><span class="line">    consul:</span><br><span class="line">      host: 127.0.0.1</span><br><span class="line">      port: 8500</span><br><span class="line">      config:</span><br><span class="line">        prefix: config</span><br><span class="line">        enabled: true</span><br><span class="line">        format: YAML</span><br><span class="line">        data-key: user #user为Consul中创建的key&#x2F;value的配置信息</span><br></pre></td></tr></table></figure>
+
+<p>创建应用级配置文件application.yml<br>定义应用级别的配置在 bootstrap.yml 之后加载</p>
+<p>spring.cloud.consul.host：配置consul地址<br>spring.cloud.consul.port：配置consul端口<br>spring.cloud.consul.discovery.enabled：启用服务发现<br>spring.cloud.consul.discovery.register：启用服务注册<br>spring.cloud.consul.discovery.deregister：服务停止时取消注册<br>spring.cloud.consul.discovery.prefer-ip-address：表示注册时使用IP而不是hostname<br>spring.cloud.consul.discovery.health-check-interval：健康检查频率<br>spring.cloud.consul.discovery.health-check-path：健康检查路径<br>spring.cloud.consul.discovery.health-check-critical-timeout：健康检查失败多长时间后，取消注册<br>spring.cloud.consul.discovery.instance-id：服务注册标识</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">server:</span><br><span class="line">  port: 8082</span><br><span class="line">spring:</span><br><span class="line">  application:</span><br><span class="line">    name: consul-service</span><br><span class="line">  profiles:</span><br><span class="line">    active: dev</span><br><span class="line">  cloud:</span><br><span class="line">    consul:</span><br><span class="line">      host: 127.0.0.1</span><br><span class="line">      port: 8500</span><br><span class="line">      discovery: # 服务发现配置</span><br><span class="line">        enabled: true</span><br><span class="line">        register: true</span><br><span class="line">        deregister: true</span><br><span class="line">        prefer-ip-address: true</span><br><span class="line">        health-check-interval: 10s</span><br><span class="line">        health-check-critical-timeout: 30s</span><br><span class="line">        health-check-path: &#x2F;health</span><br><span class="line">        instance-id: $&#123;spring.application.name&#125;:$&#123;spring.cloud.client.ip-address&#125;:$&#123;server.port&#125; # 应用名称+服务器IP+端口</span><br></pre></td></tr></table></figure>
+<h4 id="启动类添加注解"><a href="#启动类添加注解" class="headerlink" title="启动类添加注解"></a>启动类添加注解</h4><p>启动类加@EnableDiscoveryClient：让注册中心进行服务发现，将服务注册到服务组件上。<br>启动项目就可以看到注册成功</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%9E%B6%E6%9E%84/" rel="tag"># 架构</a>
+          
+            <a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag"># 微服务</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/04/18/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%AE%9E%E8%B7%B5%E4%B9%8B%E5%8D%95%E7%82%B9%E6%95%85%E9%9A%9C%E4%B8%8E%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" rel="next" title="微服务实践之单点故障与分布式锁">
+                <i class="fa fa-chevron-left"></i> 微服务实践之单点故障与分布式锁
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/04/19/%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" rel="prev" title="怎么实现分库分表">
+                怎么实现分库分表 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/user.gif"
+                alt="修峰" />
+            
+              <p class="site-author-name" itemprop="name">修峰</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/205721860" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:205721860@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用Consul创建注册中心（基于docker-compose）"><span class="nav-number">1.</span> <span class="nav-text">使用Consul创建注册中心（基于docker-compose）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务如何注册进服务端"><span class="nav-number">2.</span> <span class="nav-text">服务如何注册进服务端</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一种：-使用docker启动nodejs"><span class="nav-number">2.1.</span> <span class="nav-text">第一种： 使用docker启动nodejs</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#以Koa为例"><span class="nav-number">2.1.1.</span> <span class="nav-text">以Koa为例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#构建docker镜像"><span class="nav-number">2.1.2.</span> <span class="nav-text">构建docker镜像</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#以Spring-Boot-为例"><span class="nav-number">2.2.</span> <span class="nav-text">以Spring Boot 为例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#添加Maven依赖"><span class="nav-number">2.2.1.</span> <span class="nav-text">添加Maven依赖</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#添加配置"><span class="nav-number">2.2.2.</span> <span class="nav-text">添加配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#启动类添加注解"><span class="nav-number">2.2.3.</span> <span class="nav-text">启动类添加注解</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">修峰</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+
+  <script src='https://unpkg.com/mermaid@7.1.2/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'forest'});
+    }
+  </script>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
