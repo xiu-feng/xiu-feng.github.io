@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>修峰</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="修峰">
+<meta property="og:type" content="website">
+<meta property="og:title" content="修峰">
+<meta property="og:url" content="http://yoursite.com/index.html">
+<meta property="og:site_name" content="修峰">
+<meta property="og:description" content="修峰">
+<meta property="article:author" content="修峰">
+<meta property="article:tag" content="修峰">
+<meta name="twitter:card" content="summary">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">修峰</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">常应常静常清净</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-Gitlab-CI-CD持续交付" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/04/28/Gitlab-CI-CD%E6%8C%81%E7%BB%AD%E4%BA%A4%E4%BB%98/" class="article-date">
+  <time datetime="2020-04-28T07:09:10.000Z" itemprop="datePublished">2020-04-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/git/">git</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/28/Gitlab-CI-CD%E6%8C%81%E7%BB%AD%E4%BA%A4%E4%BB%98/">Gitlab CI/CD持续交付</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="安装Gitlab"><a href="#安装Gitlab" class="headerlink" title="安装Gitlab"></a>安装Gitlab</h2><h3 id="使用docker安装Gitlab。docker-compose-yml文件内容如下"><a href="#使用docker安装Gitlab。docker-compose-yml文件内容如下" class="headerlink" title="使用docker安装Gitlab。docker-compose.yml文件内容如下"></a>使用docker安装Gitlab。docker-compose.yml文件内容如下</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">version: &#39;3&#39;</span><br><span class="line">services:</span><br><span class="line">    web:</span><br><span class="line">      image: &#39;twang2218&#x2F;gitlab-ce-zh:10.5&#39;</span><br><span class="line">      # restart: always</span><br><span class="line">      hostname: &#39;gitlab.agro-robot.net&#39;</span><br><span class="line">      environment:</span><br><span class="line">        TZ: &#39;Asia&#x2F;Shanghai&#39;</span><br><span class="line">        GITLAB_OMNIBUS_CONFIG: |</span><br><span class="line">          external_url &#39;http:&#x2F;&#x2F;gitlab.agro-robot.net:8181&#39;</span><br><span class="line">          gitlab_rails[&#39;gitlab_shell_ssh_port&#39;] &#x3D; 2222</span><br><span class="line">          unicorn[&#39;port&#39;] &#x3D; 8888</span><br><span class="line">          nginx[&#39;listen_port&#39;] &#x3D; 80</span><br><span class="line">      ports:</span><br><span class="line">        - &#39;8181:80&#39;</span><br><span class="line">        - &#39;8443:443&#39;</span><br><span class="line">        - &#39;2222:22&#39;</span><br><span class="line">      volumes:</span><br><span class="line">        - &#x2F;usr&#x2F;local&#x2F;docker&#x2F;gitlab&#x2F;config:&#x2F;etc&#x2F;gitlab</span><br><span class="line">        - &#x2F;usr&#x2F;local&#x2F;docker&#x2F;gitlab&#x2F;data:&#x2F;var&#x2F;opt&#x2F;gitlab</span><br><span class="line">        - &#x2F;usr&#x2F;local&#x2F;docker&#x2F;gitlab&#x2F;logs:&#x2F;var&#x2F;log&#x2F;gitlab</span><br></pre></td></tr></table></figure>
+<p>⚠️：安装gitlab服务器要保证内存在2G以上</p>
+<h2 id="安装docker私有库"><a href="#安装docker私有库" class="headerlink" title="安装docker私有库"></a>安装docker私有库</h2><h3 id="使用docker安装私有库，docker-compose文件内容如下"><a href="#使用docker安装私有库，docker-compose文件内容如下" class="headerlink" title="使用docker安装私有库，docker-compose文件内容如下"></a>使用docker安装私有库，docker-compose文件内容如下</h3>
+        
+          <p class="article-more-link">
+            <a href="/2020/04/28/Gitlab-CI-CD%E6%8C%81%E7%BB%AD%E4%BA%A4%E4%BB%98/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/04/28/Gitlab-CI-CD%E6%8C%81%E7%BB%AD%E4%BA%A4%E4%BB%98/" data-id="ckixzacpq0000840g3pk70i3t" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%9E%B6%E6%9E%84/" rel="tag">架构</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-怎么实现分库分表" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/04/19/%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" class="article-date">
+  <time datetime="2020-04-19T03:18:58.000Z" itemprop="datePublished">2020-04-19</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">微服务</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/19/%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/">怎么实现分库分表</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="如何实现分表"><a href="#如何实现分表" class="headerlink" title="如何实现分表"></a>如何实现分表</h2><p>MySQL数据库每个表的数据最好是小于1000万，大于1000万会有明显的查询效率问题。那么我现在有一个业务，比如订单服务，并发量很大。我该怎么来实现存储？</p>
+<p>创建 tb_order_0,tb_order_1,tb_order_2,tb_order_3,tb_order_4,tb_order_5,tb_order_6,tb_order_7,tb_order_8,tb_order_9.十个表，数据id使用long类型。id规则为当前的时间戳加上随机的三位数，比如2020041911185834031.那么这条数据存储就按照最后一位数字来存储到对应的表中，前面数字的最后一位为1，则将这个数据存放在tb_order_1中。查询也是的根据id去不同的表中查询。</p>
+<p>当然如果数据量还要更大的还可以继续分表。如 tb_order_0_0 十个表都不够了，你就发财了，嘻嘻。</p>
+<p>例： select * from tb_order_${num} where id=#{id},num为id的最后一位</p>
+<p>数据必须归档，制定一个归档策略。</p>
+<h2 id="实现分库"><a href="#实现分库" class="headerlink" title="实现分库"></a>实现分库</h2><p> 分库就是不同的业务放在不同的数据库</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/04/19/%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" data-id="ckixzacq3000a840g6cuhfm3k" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">微服务</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-微服务实战（一）：搭建注册中心，并注册服务" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/04/19/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%AE%9E%E6%88%98%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E6%90%AD%E5%BB%BA%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%EF%BC%8C%E5%B9%B6%E6%B3%A8%E5%86%8C%E6%9C%8D%E5%8A%A1/" class="article-date">
+  <time datetime="2020-04-19T03:00:50.000Z" itemprop="datePublished">2020-04-19</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">微服务</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/19/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%AE%9E%E6%88%98%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E6%90%AD%E5%BB%BA%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%EF%BC%8C%E5%B9%B6%E6%B3%A8%E5%86%8C%E6%9C%8D%E5%8A%A1/">微服务实战（一）：搭建注册中心，并注册服务</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="使用Consul创建注册中心（基于docker-compose）"><a href="#使用Consul创建注册中心（基于docker-compose）" class="headerlink" title="使用Consul创建注册中心（基于docker-compose）"></a>使用Consul创建注册中心（基于docker-compose）</h2><p>docker-compose 文件如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">version: &quot;3.0&quot;</span><br><span class="line"></span><br><span class="line">services:</span><br><span class="line">    # consul server，对外暴露的ui接口为8500，只有在2台consul服务器的情况下集群才起作用</span><br><span class="line">    consulserver:</span><br><span class="line">        image: progrium&#x2F;consul:latest</span><br><span class="line">        hostname: consulserver</span><br><span class="line">        ports:</span><br><span class="line">            - &quot;8300&quot;</span><br><span class="line">            - &quot;8400&quot;</span><br><span class="line">            - &quot;8500:8500&quot;</span><br><span class="line">            - &quot;53&quot;</span><br><span class="line">        command: -server -ui-dir &#x2F;ui -data-dir &#x2F;tmp&#x2F;consul --bootstrap-expect&#x3D;3</span><br><span class="line"></span><br><span class="line">    # consul server1在consul server服务起来后，加入集群中</span><br><span class="line">    consulserver1:</span><br><span class="line">        image: progrium&#x2F;consul:latest</span><br><span class="line">        hostname: consulserver1</span><br><span class="line">        depends_on:</span><br><span class="line">            - &quot;consulserver&quot;</span><br><span class="line">        ports:</span><br><span class="line">            - &quot;8300&quot;</span><br><span class="line">            - &quot;8400&quot;</span><br><span class="line">            - &quot;8500&quot;</span><br><span class="line">            - &quot;53&quot;</span><br><span class="line">        command: -server -data-dir &#x2F;tmp&#x2F;consul -join consulserver</span><br><span class="line"></span><br><span class="line">    # consul server2在consul server服务起来后，加入集群中</span><br><span class="line">    consulserver2:</span><br><span class="line">        image: progrium&#x2F;consul:latest</span><br><span class="line">        hostname: consulserver2</span><br><span class="line">        depends_on:</span><br><span class="line">            - &quot;consulserver&quot;</span><br><span class="line">        ports:</span><br><span class="line">            - &quot;8300&quot;</span><br><span class="line">            - &quot;8400&quot;</span><br><span class="line">            - &quot;8500&quot;</span><br><span class="line">            - &quot;53&quot;</span><br><span class="line">        command: -server -data-dir &#x2F;tmp&#x2F;consul -join consulserver</span><br><span class="line">    #注册中心</span><br><span class="line">    registrator:</span><br><span class="line">        image: gliderlabs&#x2F;registrator:master</span><br><span class="line">        hostname: registrator</span><br><span class="line">        depends_on:</span><br><span class="line">            - &quot;consulserver&quot;</span><br><span class="line">        volumes:</span><br><span class="line">            - &quot;&#x2F;var&#x2F;run&#x2F;docker.sock:&#x2F;tmp&#x2F;docker.sock&quot;</span><br><span class="line">        command: -internal consul:&#x2F;&#x2F;consulserver:8500</span><br></pre></td></tr></table></figure>
+<p>访问<a href="http://127.0.0.1:8500" target="_blank" rel="noopener">127.0.0.1:8500</a>查看注册中心是否启动成功</p>
+<h2 id="服务如何注册进服务端"><a href="#服务如何注册进服务端" class="headerlink" title="服务如何注册进服务端"></a>服务如何注册进服务端</h2><h3 id="第一种：-使用docker启动nodejs"><a href="#第一种：-使用docker启动nodejs" class="headerlink" title="第一种： 使用docker启动nodejs"></a>第一种： 使用docker启动nodejs</h3>
+        
+          <p class="article-more-link">
+            <a href="/2020/04/19/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%AE%9E%E6%88%98%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E6%90%AD%E5%BB%BA%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%EF%BC%8C%E5%B9%B6%E6%B3%A8%E5%86%8C%E6%9C%8D%E5%8A%A1/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/04/19/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%AE%9E%E6%88%98%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E6%90%AD%E5%BB%BA%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%EF%BC%8C%E5%B9%B6%E6%B3%A8%E5%86%8C%E6%9C%8D%E5%8A%A1/" data-id="ckixzacpu0001840g20jtg78x" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">微服务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%9E%B6%E6%9E%84/" rel="tag">架构</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-微服务实践之单点故障与分布式锁" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/04/18/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%AE%9E%E8%B7%B5%E4%B9%8B%E5%8D%95%E7%82%B9%E6%95%85%E9%9A%9C%E4%B8%8E%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" class="article-date">
+  <time datetime="2020-04-18T09:10:41.000Z" itemprop="datePublished">2020-04-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">微服务</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/18/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%AE%9E%E8%B7%B5%E4%B9%8B%E5%8D%95%E7%82%B9%E6%95%85%E9%9A%9C%E4%B8%8E%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">微服务实践之单点故障与分布式锁</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="分布式锁的应用场景"><a href="#分布式锁的应用场景" class="headerlink" title="分布式锁的应用场景"></a>分布式锁的应用场景</h2><p>在分布式服务中，有一种最典型的场景，就是通过对集群进行master选举，来解决分布式系统中的单点故障。什么是分布式系统中的单点故障：通常分布式系统采用主从模式，就是一个主控机连接多个处理节点。主节点负责处理任务，当我们的主节点发生故障时，那么整个系统就瘫痪了，那么我们就把这种故障叫做单点故障。</p>
+<h2 id="未完待续…"><a href="#未完待续…" class="headerlink" title="未完待续…"></a>未完待续…</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/04/18/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%AE%9E%E8%B7%B5%E4%B9%8B%E5%8D%95%E7%82%B9%E6%95%85%E9%9A%9C%E4%B8%8E%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" data-id="ckixzacpy0005840g26je3acx" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">微服务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%9E%B6%E6%9E%84/" rel="tag">架构</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-微服务实践之微服务需要解决的问题" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/04/14/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%AE%9E%E8%B7%B5%E4%B9%8B%E5%BE%AE%E6%9C%8D%E5%8A%A1%E9%9C%80%E8%A6%81%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98/" class="article-date">
+  <time datetime="2020-04-14T06:02:49.000Z" itemprop="datePublished">2020-04-14</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">微服务</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/04/14/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%AE%9E%E8%B7%B5%E4%B9%8B%E5%BE%AE%E6%9C%8D%E5%8A%A1%E9%9C%80%E8%A6%81%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98/">微服务实践之微服务需要解决的问题</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="要实际的应用微服务，需要解决以下的问题："><a href="#要实际的应用微服务，需要解决以下的问题：" class="headerlink" title="要实际的应用微服务，需要解决以下的问题："></a>要实际的应用微服务，需要解决以下的问题：</h2><p>1.客户端如何访问这些服务<br>2.每个服务之间如何通信<br>3.如此多的服务，如何实现<br>4.服务挂了，如何解决？</p>
+<h3 id="客户端如何访问这些服务"><a href="#客户端如何访问这些服务" class="headerlink" title="客户端如何访问这些服务"></a>客户端如何访问这些服务</h3><h2 id="未完待续…"><a href="#未完待续…" class="headerlink" title="未完待续…"></a>未完待续…</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/04/14/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%AE%9E%E8%B7%B5%E4%B9%8B%E5%BE%AE%E6%9C%8D%E5%8A%A1%E9%9C%80%E8%A6%81%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98/" data-id="ckixzacq10006840gai74h33o" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">微服务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%9E%B6%E6%9E%84/" rel="tag">架构</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Nodejs之koa学习（一）" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/03/26/Nodejs%E4%B9%8Bkoa%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%80%EF%BC%89/" class="article-date">
+  <time datetime="2020-03-26T07:08:43.000Z" itemprop="datePublished">2020-03-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/koa/">koa</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/26/Nodejs%E4%B9%8Bkoa%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%80%EF%BC%89/">Nodejs之koa学习（一）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="搭建koa项目"><a href="#搭建koa项目" class="headerlink" title="搭建koa项目"></a>搭建koa项目</h1><p>开发环境需安装node与npm</p>
+<h2 id="创建项目目录"><a href="#创建项目目录" class="headerlink" title="创建项目目录"></a>创建项目目录</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir koa_01</span><br></pre></td></tr></table></figure>
+<h2 id="初始化koa"><a href="#初始化koa" class="headerlink" title="初始化koa"></a>初始化koa</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd koa_01</span><br><span class="line">$ npm init --yes</span><br></pre></td></tr></table></figure>
+<h2 id="安装koa库"><a href="#安装koa库" class="headerlink" title="安装koa库"></a>安装koa库</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm i koa</span><br></pre></td></tr></table></figure>
+        
+          <p class="article-more-link">
+            <a href="/2020/03/26/Nodejs%E4%B9%8Bkoa%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%80%EF%BC%89/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/03/26/Nodejs%E4%B9%8Bkoa%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%80%EF%BC%89/" data-id="ckixzacpx0004840g8mz6ansy" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/koa/" rel="tag">koa</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/nodejs/" rel="tag">nodejs</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/koa/">koa</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">微服务</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/koa/" rel="tag">koa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nodejs/" rel="tag">nodejs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">微服务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9E%B6%E6%9E%84/" rel="tag">架构</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/koa/" style="font-size: 10px;">koa</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 20px;">微服务</a> <a href="/tags/%E6%9E%B6%E6%9E%84/" style="font-size: 20px;">架构</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/04/28/Gitlab-CI-CD%E6%8C%81%E7%BB%AD%E4%BA%A4%E4%BB%98/">Gitlab CI/CD持续交付</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/19/%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/">怎么实现分库分表</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/19/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%AE%9E%E6%88%98%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E6%90%AD%E5%BB%BA%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%EF%BC%8C%E5%B9%B6%E6%B3%A8%E5%86%8C%E6%9C%8D%E5%8A%A1/">微服务实战（一）：搭建注册中心，并注册服务</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/18/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%AE%9E%E8%B7%B5%E4%B9%8B%E5%8D%95%E7%82%B9%E6%95%85%E9%9A%9C%E4%B8%8E%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">微服务实践之单点故障与分布式锁</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/14/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%AE%9E%E8%B7%B5%E4%B9%8B%E5%BE%AE%E6%9C%8D%E5%8A%A1%E9%9C%80%E8%A6%81%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98/">微服务实践之微服务需要解决的问题</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 修峰<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

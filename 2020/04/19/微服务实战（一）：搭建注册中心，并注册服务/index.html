@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>微服务实战（一）：搭建注册中心，并注册服务 | 修峰</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="使用Consul创建注册中心（基于docker-compose）docker-compose 文件如下： 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748version: &quot;3.0&quot;services:    # consul server，对外暴露的ui">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微服务实战（一）：搭建注册中心，并注册服务">
+<meta property="og:url" content="http://yoursite.com/2020/04/19/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%AE%9E%E6%88%98%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E6%90%AD%E5%BB%BA%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%EF%BC%8C%E5%B9%B6%E6%B3%A8%E5%86%8C%E6%9C%8D%E5%8A%A1/index.html">
+<meta property="og:site_name" content="修峰">
+<meta property="og:description" content="使用Consul创建注册中心（基于docker-compose）docker-compose 文件如下： 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748version: &quot;3.0&quot;services:    # consul server，对外暴露的ui">
+<meta property="article:published_time" content="2020-04-19T03:00:50.000Z">
+<meta property="article:modified_time" content="2020-07-24T05:43:38.102Z">
+<meta property="article:author" content="修峰">
+<meta property="article:tag" content="架构">
+<meta property="article:tag" content="微服务">
+<meta name="twitter:card" content="summary">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">修峰</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">常应常静常清净</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-微服务实战（一）：搭建注册中心，并注册服务" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/04/19/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%AE%9E%E6%88%98%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E6%90%AD%E5%BB%BA%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%EF%BC%8C%E5%B9%B6%E6%B3%A8%E5%86%8C%E6%9C%8D%E5%8A%A1/" class="article-date">
+  <time datetime="2020-04-19T03:00:50.000Z" itemprop="datePublished">2020-04-19</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">微服务</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      微服务实战（一）：搭建注册中心，并注册服务
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="使用Consul创建注册中心（基于docker-compose）"><a href="#使用Consul创建注册中心（基于docker-compose）" class="headerlink" title="使用Consul创建注册中心（基于docker-compose）"></a>使用Consul创建注册中心（基于docker-compose）</h2><p>docker-compose 文件如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">version: &quot;3.0&quot;</span><br><span class="line"></span><br><span class="line">services:</span><br><span class="line">    # consul server，对外暴露的ui接口为8500，只有在2台consul服务器的情况下集群才起作用</span><br><span class="line">    consulserver:</span><br><span class="line">        image: progrium&#x2F;consul:latest</span><br><span class="line">        hostname: consulserver</span><br><span class="line">        ports:</span><br><span class="line">            - &quot;8300&quot;</span><br><span class="line">            - &quot;8400&quot;</span><br><span class="line">            - &quot;8500:8500&quot;</span><br><span class="line">            - &quot;53&quot;</span><br><span class="line">        command: -server -ui-dir &#x2F;ui -data-dir &#x2F;tmp&#x2F;consul --bootstrap-expect&#x3D;3</span><br><span class="line"></span><br><span class="line">    # consul server1在consul server服务起来后，加入集群中</span><br><span class="line">    consulserver1:</span><br><span class="line">        image: progrium&#x2F;consul:latest</span><br><span class="line">        hostname: consulserver1</span><br><span class="line">        depends_on:</span><br><span class="line">            - &quot;consulserver&quot;</span><br><span class="line">        ports:</span><br><span class="line">            - &quot;8300&quot;</span><br><span class="line">            - &quot;8400&quot;</span><br><span class="line">            - &quot;8500&quot;</span><br><span class="line">            - &quot;53&quot;</span><br><span class="line">        command: -server -data-dir &#x2F;tmp&#x2F;consul -join consulserver</span><br><span class="line"></span><br><span class="line">    # consul server2在consul server服务起来后，加入集群中</span><br><span class="line">    consulserver2:</span><br><span class="line">        image: progrium&#x2F;consul:latest</span><br><span class="line">        hostname: consulserver2</span><br><span class="line">        depends_on:</span><br><span class="line">            - &quot;consulserver&quot;</span><br><span class="line">        ports:</span><br><span class="line">            - &quot;8300&quot;</span><br><span class="line">            - &quot;8400&quot;</span><br><span class="line">            - &quot;8500&quot;</span><br><span class="line">            - &quot;53&quot;</span><br><span class="line">        command: -server -data-dir &#x2F;tmp&#x2F;consul -join consulserver</span><br><span class="line">    #注册中心</span><br><span class="line">    registrator:</span><br><span class="line">        image: gliderlabs&#x2F;registrator:master</span><br><span class="line">        hostname: registrator</span><br><span class="line">        depends_on:</span><br><span class="line">            - &quot;consulserver&quot;</span><br><span class="line">        volumes:</span><br><span class="line">            - &quot;&#x2F;var&#x2F;run&#x2F;docker.sock:&#x2F;tmp&#x2F;docker.sock&quot;</span><br><span class="line">        command: -internal consul:&#x2F;&#x2F;consulserver:8500</span><br></pre></td></tr></table></figure>
+<p>访问<a href="http://127.0.0.1:8500" target="_blank" rel="noopener">127.0.0.1:8500</a>查看注册中心是否启动成功</p>
+<h2 id="服务如何注册进服务端"><a href="#服务如何注册进服务端" class="headerlink" title="服务如何注册进服务端"></a>服务如何注册进服务端</h2><h3 id="第一种：-使用docker启动nodejs"><a href="#第一种：-使用docker启动nodejs" class="headerlink" title="第一种： 使用docker启动nodejs"></a>第一种： 使用docker启动nodejs</h3><a id="more"></a>
+<h4 id="以Koa为例"><a href="#以Koa为例" class="headerlink" title="以Koa为例"></a>以Koa为例</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">const Koa &#x3D; require(&#39;koa&#39;);</span><br><span class="line">const app &#x3D; new Koa();</span><br><span class="line"></span><br><span class="line">app.use(ctx &#x3D;&gt; &#123;</span><br><span class="line">  ctx.body &#x3D; &#39;Hello Koa&#39;;</span><br><span class="line">&#125;);</span><br><span class="line"> </span><br><span class="line">app.listen(3000);</span><br><span class="line">console.log(&quot;Running on http:&#x2F;&#x2F;localhost:&quot; + 3000);</span><br></pre></td></tr></table></figure>
+<p>Dcokerfile 文件内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">FROM node:10</span><br><span class="line">RUN mkdir -p &#x2F;home&#x2F;demo</span><br><span class="line">WORKDIR &#x2F;home&#x2F;demo </span><br><span class="line">COPY . &#x2F;home&#x2F;demo</span><br><span class="line">RUN npm install</span><br><span class="line">EXPOSE 3000</span><br><span class="line">CMD npm start</span><br></pre></td></tr></table></figure>
+
+<p>FROM 基于镜像<br>RUN 执行命令<br>WORKDIR 切换工作目录<br>COPY 拷贝当前目录到容器目录<br>EXPOSE 暴露端口<br>CMD 启动命令（一个Dockerfile只能有一个）</p>
+<h4 id="构建docker镜像"><a href="#构建docker镜像" class="headerlink" title="构建docker镜像"></a>构建docker镜像</h4><p>在Dockerfile同级目录下执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker build -t clent-koa .</span><br></pre></td></tr></table></figure>
+<p>查看镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker image ls</span><br></pre></td></tr></table></figure>
+<p>启动镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -d -p 3000:3000 client-koa</span><br></pre></td></tr></table></figure>
+<p>访问<a href="http://127.0.0.1:3000" target="_blank" rel="noopener">127.0.0.1:3000</a>就可以访问koa项目</p>
+<p>创建client-koa的docker-compose.koa.yml 文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">version: &quot;3.0&quot;</span><br><span class="line"></span><br><span class="line">services:</span><br><span class="line">  koa:</span><br><span class="line">  image: client-koa:latest</span><br><span class="line">  environment:</span><br><span class="line">    #作用将3000端口的应用注册到注册中心</span><br><span class="line">    SERVICE_3000_NAME: service-koa</span><br><span class="line">  ports:</span><br><span class="line">    - &quot;3000&quot;</span><br></pre></td></tr></table></figure>
+<p>client-koa为刚才构建的镜像</p>
+<p>启动服务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose -f docker-compose.koa.yml up -d --scale web&#x3D;3</span><br></pre></td></tr></table></figure>
+<p>–scale web=3表示启动三台服务器</p>
+<h3 id="以Spring-Boot-为例"><a href="#以Spring-Boot-为例" class="headerlink" title="以Spring Boot 为例"></a>以Spring Boot 为例</h3><h4 id="添加Maven依赖"><a href="#添加Maven依赖" class="headerlink" title="添加Maven依赖"></a>添加Maven依赖</h4><p>在Spring Boot项目pom.xml文件中引入spring-cloud-starter-consul-discovery启动器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.cloud&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-cloud-starter-consul-discovery&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;2.1.1.RELEASE&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
+<p>使用Consul配置信息时需引入spring-cloud-starter-consul-config依赖</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> &lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.cloud&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-cloud-starter-consul-config&lt;&#x2F;artifactId&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="添加配置"><a href="#添加配置" class="headerlink" title="添加配置"></a>添加配置</h4><p>创建系统级配置文件bootstrap.yml<br>使用Spring Cloud Consul Config,需要配置以下信息在bootstrap.yml文件</p>
+<p>spring.cloud.consul.host：配置consul地址<br>spring.cloud.consul.port：配置consul端口<br>spring.cloud.consul.config.prefix：配置基本文件，默认值config<br>spring.cloud.consul.config.enabled：启动consul配置中心<br>spring.cloud.consul.config.format：consul上面文件的格式 YAML、FILES、PROPERTIES、默认 KEY-VALUE<br>spring.cloud.consul.config.data-key：表示 consul 上面的 KEY 值(或者说文件的名字)，默认是 data</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  cloud:</span><br><span class="line">    consul:</span><br><span class="line">      host: 127.0.0.1</span><br><span class="line">      port: 8500</span><br><span class="line">      config:</span><br><span class="line">        prefix: config</span><br><span class="line">        enabled: true</span><br><span class="line">        format: YAML</span><br><span class="line">        data-key: user #user为Consul中创建的key&#x2F;value的配置信息</span><br></pre></td></tr></table></figure>
+
+<p>创建应用级配置文件application.yml<br>定义应用级别的配置在 bootstrap.yml 之后加载</p>
+<p>spring.cloud.consul.host：配置consul地址<br>spring.cloud.consul.port：配置consul端口<br>spring.cloud.consul.discovery.enabled：启用服务发现<br>spring.cloud.consul.discovery.register：启用服务注册<br>spring.cloud.consul.discovery.deregister：服务停止时取消注册<br>spring.cloud.consul.discovery.prefer-ip-address：表示注册时使用IP而不是hostname<br>spring.cloud.consul.discovery.health-check-interval：健康检查频率<br>spring.cloud.consul.discovery.health-check-path：健康检查路径<br>spring.cloud.consul.discovery.health-check-critical-timeout：健康检查失败多长时间后，取消注册<br>spring.cloud.consul.discovery.instance-id：服务注册标识</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">server:</span><br><span class="line">  port: 8082</span><br><span class="line">spring:</span><br><span class="line">  application:</span><br><span class="line">    name: consul-service</span><br><span class="line">  profiles:</span><br><span class="line">    active: dev</span><br><span class="line">  cloud:</span><br><span class="line">    consul:</span><br><span class="line">      host: 127.0.0.1</span><br><span class="line">      port: 8500</span><br><span class="line">      discovery: # 服务发现配置</span><br><span class="line">        enabled: true</span><br><span class="line">        register: true</span><br><span class="line">        deregister: true</span><br><span class="line">        prefer-ip-address: true</span><br><span class="line">        health-check-interval: 10s</span><br><span class="line">        health-check-critical-timeout: 30s</span><br><span class="line">        health-check-path: &#x2F;health</span><br><span class="line">        instance-id: $&#123;spring.application.name&#125;:$&#123;spring.cloud.client.ip-address&#125;:$&#123;server.port&#125; # 应用名称+服务器IP+端口</span><br></pre></td></tr></table></figure>
+<h4 id="启动类添加注解"><a href="#启动类添加注解" class="headerlink" title="启动类添加注解"></a>启动类添加注解</h4><p>启动类加@EnableDiscoveryClient：让注册中心进行服务发现，将服务注册到服务组件上。<br>启动项目就可以看到注册成功</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/04/19/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%AE%9E%E6%88%98%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E6%90%AD%E5%BB%BA%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%EF%BC%8C%E5%B9%B6%E6%B3%A8%E5%86%8C%E6%9C%8D%E5%8A%A1/" data-id="ckixzacpu0001840g20jtg78x" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">微服务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%9E%B6%E6%9E%84/" rel="tag">架构</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/04/19/%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          怎么实现分库分表
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2020/04/18/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%AE%9E%E8%B7%B5%E4%B9%8B%E5%8D%95%E7%82%B9%E6%95%85%E9%9A%9C%E4%B8%8E%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">微服务实践之单点故障与分布式锁</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/koa/">koa</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">微服务</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/koa/" rel="tag">koa</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nodejs/" rel="tag">nodejs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag">微服务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9E%B6%E6%9E%84/" rel="tag">架构</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/koa/" style="font-size: 10px;">koa</a> <a href="/tags/nodejs/" style="font-size: 10px;">nodejs</a> <a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" style="font-size: 20px;">微服务</a> <a href="/tags/%E6%9E%B6%E6%9E%84/" style="font-size: 20px;">架构</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/04/28/Gitlab-CI-CD%E6%8C%81%E7%BB%AD%E4%BA%A4%E4%BB%98/">Gitlab CI/CD持续交付</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/19/%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/">怎么实现分库分表</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/19/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%AE%9E%E6%88%98%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E6%90%AD%E5%BB%BA%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%EF%BC%8C%E5%B9%B6%E6%B3%A8%E5%86%8C%E6%9C%8D%E5%8A%A1/">微服务实战（一）：搭建注册中心，并注册服务</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/18/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%AE%9E%E8%B7%B5%E4%B9%8B%E5%8D%95%E7%82%B9%E6%95%85%E9%9A%9C%E4%B8%8E%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">微服务实践之单点故障与分布式锁</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/14/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%AE%9E%E8%B7%B5%E4%B9%8B%E5%BE%AE%E6%9C%8D%E5%8A%A1%E9%9C%80%E8%A6%81%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98/">微服务实践之微服务需要解决的问题</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 修峰<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
