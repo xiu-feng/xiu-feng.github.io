@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="微服务," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="docker-compose搭建zookeeper集群准备zookeeper镜像 这里使用官方提供的镜像，版本为3.4.11 docker-compose分布式管理组件，具体安装以及使用方法见github项目  准备docker-compose.yml文件 这里要注意下yml语法，key冒号后面有空格   这里采用官方镜像提供默认配置，可根据docker-compose配置说明做调整  12345">
+<meta property="og:type" content="article">
+<meta property="og:title" content="docker-compose搭建zookeeper集群">
+<meta property="og:url" content="http://yoursite.com/2020/12/23/docker-compose%E6%90%AD%E5%BB%BAzookeeper%E9%9B%86%E7%BE%A4/index.html">
+<meta property="og:site_name" content="修峰">
+<meta property="og:description" content="docker-compose搭建zookeeper集群准备zookeeper镜像 这里使用官方提供的镜像，版本为3.4.11 docker-compose分布式管理组件，具体安装以及使用方法见github项目  准备docker-compose.yml文件 这里要注意下yml语法，key冒号后面有空格   这里采用官方镜像提供默认配置，可根据docker-compose配置说明做调整  12345">
+<meta property="article:published_time" content="2020-12-23T07:38:45.000Z">
+<meta property="article:modified_time" content="2020-12-23T07:42:25.301Z">
+<meta property="article:author" content="修峰">
+<meta property="article:tag" content="微服务">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/12/23/docker-compose搭建zookeeper集群/"/>
+
+
+
+
+
+  <title>docker-compose搭建zookeeper集群 | 修峰</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">修峰</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">过去无可挽回，未来可以改变</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/12/23/docker-compose%E6%90%AD%E5%BB%BAzookeeper%E9%9B%86%E7%BE%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="修峰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/user.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="修峰">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">docker-compose搭建zookeeper集群</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-12-23T15:38:45+08:00">
+                2020-12-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" itemprop="url" rel="index">
+                    <span itemprop="name">微服务</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  873 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  4 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="docker-compose搭建zookeeper集群"><a href="#docker-compose搭建zookeeper集群" class="headerlink" title="docker-compose搭建zookeeper集群"></a>docker-compose搭建zookeeper集群</h1><h1 id="准备zookeeper镜像"><a href="#准备zookeeper镜像" class="headerlink" title="准备zookeeper镜像"></a>准备zookeeper镜像</h1><ul>
+<li>这里使用官方提供的镜像，版本为<a href="https://link.jianshu.com/?t=https%3A%2F%2Fdev.aliyun.com%2Fdetail.html%3Fspm%3D5176.1972343.2.2.egkO4v%26repoId%3D12963" target="_blank" rel="noopener">3.4.11</a></li>
+<li><a href="https://link.jianshu.com/?t=https%3A%2F%2Fgithub.com%2Fdocker%2Fdocker.github.io%2Fblob%2Fmaster%2Fcompose%2Fcompose-file%2Findex.md" target="_blank" rel="noopener">docker-compose</a>分布式管理组件，具体安装以及使用方法见github项目</li>
+</ul>
+<h1 id="准备docker-compose-yml文件"><a href="#准备docker-compose-yml文件" class="headerlink" title="准备docker-compose.yml文件"></a>准备<code>docker-compose.yml</code>文件</h1><blockquote>
+<p>这里要注意下<code>yml</code>语法，key冒号后面有空格</p>
+</blockquote>
+<ul>
+<li>这里采用官方镜像提供默认配置，可根据docker-compose配置说明做调整</li>
+</ul>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">version:</span> <span class="string">'3.1'</span></span><br><span class="line"></span><br><span class="line"><span class="symbol">services:</span></span><br><span class="line">  <span class="symbol">zoo1:</span></span><br><span class="line">    <span class="symbol">image:</span> <span class="symbol">zookeeper:</span><span class="number">3.4</span>.<span class="number">11</span></span><br><span class="line">    <span class="symbol">restart:</span> always</span><br><span class="line">    <span class="symbol">hostname:</span> zoo1</span><br><span class="line">    <span class="symbol">container_name:</span> zookeeper_1</span><br><span class="line">    <span class="comment">#domainname: </span></span><br><span class="line">    <span class="symbol">ports:</span></span><br><span class="line">      - <span class="number">2181</span><span class="symbol">:</span><span class="number">2181</span></span><br><span class="line">    <span class="symbol">volumes:</span></span><br><span class="line">      - <span class="regexp">/usr/local</span><span class="regexp">/docker_app/zookeeper</span><span class="regexp">/zoo1/data</span><span class="symbol">:/data</span></span><br><span class="line">      - <span class="regexp">/usr/local</span><span class="regexp">/docker_app/zookeeper</span><span class="regexp">/zoo1/datalog</span><span class="symbol">:/datalog</span></span><br><span class="line">    <span class="symbol">environment:</span></span><br><span class="line">      <span class="symbol">ZOO_MY_ID:</span> <span class="number">1</span></span><br><span class="line">      <span class="symbol">ZOO_SERVERS:</span> server.<span class="number">1</span>=<span class="symbol">zoo1:</span><span class="number">2888</span><span class="symbol">:</span><span class="number">3888</span> server.<span class="number">2</span>=<span class="symbol">zoo2:</span><span class="number">2888</span><span class="symbol">:</span><span class="number">3888</span> server.<span class="number">3</span>=<span class="symbol">zoo3:</span><span class="number">2888</span><span class="symbol">:</span><span class="number">3888</span></span><br><span class="line"></span><br><span class="line">  <span class="symbol">zoo2:</span></span><br><span class="line">    <span class="symbol">image:</span> <span class="symbol">zookeeper:</span><span class="number">3.4</span>.<span class="number">11</span></span><br><span class="line">    <span class="symbol">restart:</span> always</span><br><span class="line">    <span class="symbol">hostname:</span> zoo2</span><br><span class="line">    <span class="symbol">container_name:</span> zookeeper_2</span><br><span class="line">    <span class="symbol">ports:</span></span><br><span class="line">      - <span class="number">2182</span><span class="symbol">:</span><span class="number">2181</span></span><br><span class="line">    <span class="symbol">volumes:</span></span><br><span class="line">      - <span class="regexp">/usr/local</span><span class="regexp">/docker_app/zookeeper</span><span class="regexp">/zoo2/data</span><span class="symbol">:/data</span></span><br><span class="line">      - <span class="regexp">/usr/local</span><span class="regexp">/docker_app/zookeeper</span><span class="regexp">/zoo2/datalog</span><span class="symbol">:/datalog</span></span><br><span class="line">    <span class="symbol">environment:</span></span><br><span class="line">      <span class="symbol">ZOO_MY_ID:</span> <span class="number">2</span></span><br><span class="line">      <span class="symbol">ZOO_SERVERS:</span> server.<span class="number">1</span>=<span class="symbol">zoo1:</span><span class="number">2888</span><span class="symbol">:</span><span class="number">3888</span> server.<span class="number">2</span>=<span class="symbol">zoo2:</span><span class="number">2888</span><span class="symbol">:</span><span class="number">3888</span> server.<span class="number">3</span>=<span class="symbol">zoo3:</span><span class="number">2888</span><span class="symbol">:</span><span class="number">3888</span></span><br><span class="line"></span><br><span class="line">  <span class="symbol">zoo3:</span></span><br><span class="line">    <span class="symbol">image:</span> <span class="symbol">zookeeper:</span><span class="number">3.4</span>.<span class="number">11</span></span><br><span class="line">    <span class="symbol">restart:</span> always</span><br><span class="line">    <span class="symbol">hostname:</span> zoo3</span><br><span class="line">    <span class="symbol">container_name:</span> zookeeper_3</span><br><span class="line">    <span class="symbol">ports:</span></span><br><span class="line">      - <span class="number">2183</span><span class="symbol">:</span><span class="number">2181</span></span><br><span class="line">    <span class="symbol">volumes:</span></span><br><span class="line">      - <span class="regexp">/usr/local</span><span class="regexp">/docker_app/zookeeper</span><span class="regexp">/zoo3/data</span><span class="symbol">:/data</span></span><br><span class="line">      - <span class="regexp">/usr/local</span><span class="regexp">/docker_app/zookeeper</span><span class="regexp">/zoo3/datalog</span><span class="symbol">:/datalog</span></span><br><span class="line">    <span class="symbol">environment:</span></span><br><span class="line">      <span class="symbol">ZOO_MY_ID:</span> <span class="number">3</span></span><br><span class="line">      <span class="symbol">ZOO_SERVERS:</span> server.<span class="number">1</span>=<span class="symbol">zoo1:</span><span class="number">2888</span><span class="symbol">:</span><span class="number">3888</span> server.<span class="number">2</span>=<span class="symbol">zoo2:</span><span class="number">2888</span><span class="symbol">:</span><span class="number">3888</span> server.<span class="number">3</span>=<span class="symbol">zoo3:</span><span class="number">2888</span><span class="symbol">:</span><span class="number">3888</span></span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<ul>
+<li><code>docker-compse</code>命令提供了一系列子命令</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">Define and run multi-container applications with Docker.</span><br><span class="line"></span><br><span class="line">Usage:</span><br><span class="line">  docker-compose [-f &lt;arg&gt;...] [options] [COMMAND] [ARGS...]</span><br><span class="line">  docker-compose -h|--help</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">  -f, --<span class="function">file FILE             Specify an alternate compose <span class="title">file</span> (<span class="params"><span class="keyword">default</span>: docker-compose.yml</span>)</span></span><br><span class="line"><span class="function">  -p, --project-name NAME     Specify an alternate project <span class="title">name</span> (<span class="params"><span class="keyword">default</span>: directory name</span>)</span></span><br><span class="line"><span class="function">  --verbose                   Show more output</span></span><br><span class="line"><span class="function">  --no-ansi                   Do not print ANSI control characters</span></span><br><span class="line"><span class="function">  -v, --version               Print version and exit</span></span><br><span class="line"><span class="function">  -H, --host HOST             Daemon socket to connect to</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">  --tls                       Use TLS</span>; implied <span class="keyword">by</span> --tlsverify</span><br><span class="line">  --tlscacert CA_PATH         Trust certs signed only <span class="keyword">by</span> <span class="keyword">this</span> CA</span><br><span class="line">  --tlscert CLIENT_CERT_PATH  Path to TLS certificate file</span><br><span class="line">  --tlskey TLS_KEY_PATH       Path to TLS key file</span><br><span class="line">  --tlsverify                 Use TLS and verify the remote</span><br><span class="line">  --skip-hostname-check       Don<span class="string">'t check the daemon'</span>s hostname against the name specified</span><br><span class="line">                              <span class="function"><span class="keyword">in</span> the client <span class="title">certificate</span> (<span class="params"><span class="keyword">for</span> example <span class="keyword">if</span> your docker host</span></span></span><br><span class="line"><span class="function"><span class="params">                              <span class="keyword">is</span> an IP address</span>)</span></span><br><span class="line"><span class="function">  --project-directory PATH    Specify an alternate working directory</span></span><br><span class="line"><span class="function">                              (<span class="params"><span class="keyword">default</span>: the path of the Compose file</span>)</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">Commands:</span></span><br><span class="line"><span class="function">  build              Build or rebuild services</span></span><br><span class="line"><span class="function">  bundle             Generate a Docker bundle <span class="keyword">from</span> the Compose file</span></span><br><span class="line"><span class="function">  config             Validate and view the Compose file</span></span><br><span class="line"><span class="function">  create             Create services</span></span><br><span class="line"><span class="function">  down               Stop and <span class="keyword">remove</span> containers, networks, images, and volumes</span></span><br><span class="line"><span class="function">  events             Receive real time events <span class="keyword">from</span> containers</span></span><br><span class="line"><span class="function">  exec               Execute a command <span class="keyword">in</span> a running container</span></span><br><span class="line"><span class="function">  help               Get help <span class="keyword">on</span> a command</span></span><br><span class="line"><span class="function">  images             List images</span></span><br><span class="line"><span class="function">  kill               Kill containers</span></span><br><span class="line"><span class="function">  logs               View output <span class="keyword">from</span> containers</span></span><br><span class="line"><span class="function">  pause              Pause services</span></span><br><span class="line"><span class="function">  port               Print the <span class="keyword">public</span> port <span class="keyword">for</span> a port binding</span></span><br><span class="line"><span class="function">  ps                 List containers</span></span><br><span class="line"><span class="function">  pull               Pull service images</span></span><br><span class="line"><span class="function">  push               Push service images</span></span><br><span class="line"><span class="function">  restart            Restart services</span></span><br><span class="line"><span class="function">  rm                 Remove stopped containers</span></span><br><span class="line"><span class="function">  run                Run a one-off command</span></span><br><span class="line"><span class="function">  scale              Set number of containers <span class="keyword">for</span> a service</span></span><br><span class="line"><span class="function">  start              Start services</span></span><br><span class="line"><span class="function">  stop               Stop services</span></span><br><span class="line"><span class="function">  top                Display the running processes</span></span><br><span class="line"><span class="function">  unpause            Unpause services</span></span><br><span class="line"><span class="function">  up                 Create and start containers</span></span><br><span class="line"><span class="function">  version            Show the Docker-Compose version information</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>校验指定配置文件正确性，默认配置文件名称<code>docker-compose.yml</code>或<code>docker-compose.yml</code>，我这里使用自定义名称<code>zookeeper-compose.yml</code></li>
+</ul>
+<blockquote>
+<p>注意：如若需指定配置文件，必须在<code>docker-compose</code>后面指定，不能在<code>config</code>等子命令后面指定，否则无效；如果你使用默认配置文件名称，不需要显式指定<code>-f docker-compose.yml</code></p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 查看config命令参数</span></span><br><span class="line">$ docker-compose -f zookeeper-compose.yml config --help</span><br><span class="line"><span class="comment">// 校验配置文件，不打印</span></span><br><span class="line">$ docker-compose -f zookeeper-compose.yml config -q</span><br></pre></td></tr></table></figure>
+
+<h1 id="启动zookeeper集群"><a href="#启动zookeeper集群" class="headerlink" title="启动zookeeper集群"></a>启动zookeeper集群</h1><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// -d 后台启动</span></span><br><span class="line">$ docker-compose -f zookeeper-compose.yml up -d</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查看容器启动情况</li>
+</ul>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ docker-compose -f zookeeper-compose.yml ps</span><br><span class="line">   Name                  Command               State                     Ports                   </span><br><span class="line">-------------------------------------------------------------------------------------------------</span><br><span class="line">zookeeper_1   /docker-entrypoint.sh zkSe ...   Up      <span class="number">0.0</span>.<span class="number">0.0</span>:<span class="number">2181</span>-&gt;<span class="number">2181</span>/tcp, <span class="number">2888</span>/tcp, <span class="number">3888</span>/tcp</span><br><span class="line">zookeeper_2   /docker-entrypoint.sh zkSe ...   Up      <span class="number">0.0</span>.<span class="number">0.0</span>:<span class="number">2182</span>-&gt;<span class="number">2181</span>/tcp, <span class="number">2888</span>/tcp, <span class="number">3888</span>/tcp</span><br><span class="line">zookeeper_3   /docker-entrypoint.sh zkSe ...   Up      <span class="number">0.0</span>.<span class="number">0.0</span>:<span class="number">2183</span>-&gt;<span class="number">2181</span>/tcp, <span class="number">2888</span>/tcp, <span class="number">3888</span>/tcp</span><br></pre></td></tr></table></figure>
+
+<h1 id="查看zookeeper集群状态"><a href="#查看zookeeper集群状态" class="headerlink" title="查看zookeeper集群状态"></a>查看zookeeper集群状态</h1><h2 id="zoo1"><a href="#zoo1" class="headerlink" title="zoo1"></a>zoo1</h2><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ docker exec -it zookeeper_1 /bin/sh</span><br><span class="line"></span><br><span class="line">/zookeeper<span class="number">-3.4</span><span class="number">.11</span> <span class="meta"># zkServer.sh status</span></span><br><span class="line">ZooKeeper JMX enabled <span class="keyword">by</span> <span class="keyword">default</span></span><br><span class="line">Using config: /conf/zoo.cfg</span><br><span class="line">Mode: follower                  <span class="comment">// 这是个follower</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="zoo2"><a href="#zoo2" class="headerlink" title="zoo2"></a>zoo2</h2><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ docker exec -it zookeeper_2 /bin/sh</span><br><span class="line"></span><br><span class="line">/zookeeper<span class="number">-3.4</span><span class="number">.11</span> <span class="meta"># zkServer.sh status</span></span><br><span class="line">ZooKeeper JMX enabled <span class="keyword">by</span> <span class="keyword">default</span></span><br><span class="line">Using config: /conf/zoo.cfg</span><br><span class="line">Mode: leader                <span class="comment">// 这是个leader</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="zoo3"><a href="#zoo3" class="headerlink" title="zoo3"></a>zoo3</h2><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ docker exec -it zookeeper_3 /bin/sh</span><br><span class="line"></span><br><span class="line">/zookeeper<span class="number">-3.4</span><span class="number">.11</span> <span class="meta"># zkServer.sh status</span></span><br><span class="line">ZooKeeper JMX enabled <span class="keyword">by</span> <span class="keyword">default</span></span><br><span class="line">Using config: /conf/zoo.cfg</span><br><span class="line">Mode: follower            <span class="comment">// 这也是个follower哦</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>三个zookeeper服务都正常启动了</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag"># 微服务</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/12/23/HarborForDocker/" rel="next" title="HarborForDocker">
+                <i class="fa fa-chevron-left"></i> HarborForDocker
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/user.gif"
+                alt="修峰" />
+            
+              <p class="site-author-name" itemprop="name">修峰</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/205721860" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:205721860@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+                    <div>
+                        <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="210" height="110" src="//music.163.com/outchain/player?type=2&id=564879697&auto=1&height=66""></iframe>
+                    </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#docker-compose搭建zookeeper集群"><span class="nav-number">1.</span> <span class="nav-text">docker-compose搭建zookeeper集群</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#准备zookeeper镜像"><span class="nav-number">2.</span> <span class="nav-text">准备zookeeper镜像</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#准备docker-compose-yml文件"><span class="nav-number">3.</span> <span class="nav-text">准备docker-compose.yml文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#启动zookeeper集群"><span class="nav-number">4.</span> <span class="nav-text">启动zookeeper集群</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#查看zookeeper集群状态"><span class="nav-number">5.</span> <span class="nav-text">查看zookeeper集群状态</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#zoo1"><span class="nav-number">5.1.</span> <span class="nav-text">zoo1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zoo2"><span class="nav-number">5.2.</span> <span class="nav-text">zoo2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#zoo3"><span class="nav-number">5.3.</span> <span class="nav-text">zoo3</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">修峰</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+
+  <script src='https://unpkg.com/mermaid@7.1.2/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'forest'});
+    }
+  </script>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
